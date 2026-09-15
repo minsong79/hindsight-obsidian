@@ -96,8 +96,9 @@ describe("reconcile over a filesystem vault", () => {
     expect(docId).toBe("Work/Clients/acme.md");
     expect(body).toContain("renewal in Q3");
     expect(opts.tags).toEqual(
-      expect.arrayContaining(["vault:Vault", "folder:Work", "folder:Work/Clients"])
+      expect.arrayContaining(["source:obsidian", "vault:Vault", "folder:Work", "folder:Work/Clients"])
     );
+    expect(opts.metadata.source_kind).toBe("obsidian");
     expect(opts.tags.some((t) => /^created:\d{4}$/.test(t))).toBe(true);
     expect(opts.metadata.path).toBe("Work/Clients/acme.md");
 

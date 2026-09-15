@@ -135,9 +135,6 @@ export class SyncEngine {
     if (!this.shouldInclude(file.path)) return "skipped";
 
     const prev = this.index[file.path];
-    // Cheap pre-filter: same mtime as last sync → nothing to do (no read).
-    if (!opts.force && prev && prev.mtime === file.stat.mtime) return "skipped";
-
     const raw = await this.vault.read(file);
     const hash = this.hash(raw);
     if (!opts.force && prev && prev.hash === hash) {
@@ -161,9 +158,14 @@ export class SyncEngine {
       ...dateTags("created", Number.isFinite(createdMs) ? createdMs : file.stat.ctime),
       ...dateTags("updated", file.stat.mtime),
     ];
-    const tags = [...new Set([...note.tags, ...scopeTags])];
+    const tags = [...new Set(["source:obsidian", ...note.tags, ...scopeTags])];
     // `path` lets API consumers (automations) map a recall hit back to the note.
-    const metadata = { ...note.metadata, vault: this.config.vaultName, path: file.path };
+    const metadata = {
+      ...note.metadata,
+      vault: this.config.vaultName,
+      path: file.path,
+      source_kind: "obsidian",
+    };
 
     await this.client.retain(this.config.bankId, this.docId(file.path), note.body, {
       tags,
