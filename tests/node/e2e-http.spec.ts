@@ -91,7 +91,7 @@ describe("runCli end-to-end over real HTTP", () => {
     const item = JSON.parse(retain!.body).items[0];
     expect(item.document_id).toBe("Work/note.md");
     expect(item.content).toContain("ships in Q3");
-    expect(item.tags).toEqual(expect.arrayContaining(["vault:TeamVault", "folder:Work"]));
+    expect(item.tags).toEqual(expect.arrayContaining(["source:obsidian", "vault:TeamVault", "folder:Work"]));
 
     // Delete the note and re-run: the document is pruned via a real DELETE.
     received.length = 0;
