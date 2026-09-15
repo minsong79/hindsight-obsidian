@@ -135,9 +135,6 @@ export class SyncEngine {
     if (!this.shouldInclude(file.path)) return "skipped";
 
     const prev = this.index[file.path];
-    // Cheap pre-filter: same mtime as last sync → nothing to do (no read).
-    if (!opts.force && prev && prev.mtime === file.stat.mtime) return "skipped";
-
     const raw = await this.vault.read(file);
     const hash = this.hash(raw);
     if (!opts.force && prev && prev.hash === hash) {
